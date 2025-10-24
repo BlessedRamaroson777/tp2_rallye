@@ -1,0 +1,17 @@
+# Maven / Java
+/target/
+*.log
+*.class
+*.jar
+*.war
+
+# IntelliJ
+/.idea/
+*.iml
+
+# VS Code
+/.vscode/
+
+# maven wrapper
+/.mvn/
+!/.mvn/wrapper/maven-wrapper.jar
