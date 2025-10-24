@@ -1,0 +1,18 @@
+02-TP-REST.md 2025-10-24
+
+objectifs
+
+Mettre en place les endpoint suivants sous Springboot
+/rallyes
+/rallyes/{rallye_id}/speciales
+/rallyes/{rallye_id}/speciales/{speciale_id}/temps
+/categories
+/rallyes/@id/pilotes
+/rallyes/{rallye_id}/speciales/{speciale_id}/pilotes/{pilote_id}/temps
+/rallyes/{rallye_id}/pilotes/{pilote_id}/temps
+
+authentification
+Implementer l'authentification JWT token pour tous les endpoints sauf
+/categorie
+/rallyes
+Voir le guide pour l'implémentaion
