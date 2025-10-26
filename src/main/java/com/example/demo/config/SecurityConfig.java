@@ -25,8 +25,12 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
                 // allow public access to categories and rallyes (singular + plural variants)
-                .requestMatchers(new AntPathRequestMatcher("/categorie")).permitAll()
-                .requestMatchers(new AntPathRequestMatcher("/rallyes")).permitAll()
+                    .requestMatchers(new AntPathRequestMatcher("/categories")).permitAll()
+                    .requestMatchers(new AntPathRequestMatcher("/rallyes")).permitAll()
+                    // static/front resources (index and assets)
+                    .requestMatchers(new AntPathRequestMatcher("/")).permitAll()
+                    .requestMatchers(new AntPathRequestMatcher("/index.html")).permitAll()
+                    .requestMatchers(new AntPathRequestMatcher("/static/**")).permitAll()
                 .anyRequest().authenticated())
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

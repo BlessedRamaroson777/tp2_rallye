@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TP2 Rallye - Mini front</title>
+</head>
+<body>
+  <h1>TP2 Rallye — Mini front</h1>
+
+  <div class="box">
+    <h3>Login (POST /api/auth/login)</h3>
+    <form id="loginForm">
+      <label>Username: <input id="username" value="test"></label>
+      <label style="margin-left:12px">Password: <input id="password" value="password" type="password"></label>
+      <button type="submit">Login</button>
+      <button type="button" id="logoutBtn">Logout</button>
+    </form>
+    <p>Token: <code id="token">(none)</code></p>
+  </div>
+
+  <script>
+    const tokenEl = document.getElementById('token');
+    const resultEl = document.getElementById('result');
+    const useAuthChk = document.getElementById('useAuth');
+
+    function showToken(t){ tokenEl.textContent = t ? t : '(none)'; }
+    function showResult(text){ resultEl.textContent = text; }
+
+    // restore token from localStorage
+    let token = localStorage.getItem('rallye_token');
+    showToken(token);
+
+    document.getElementById('loginForm').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const u = document.getElementById('username').value;
+      const p = document.getElementById('password').value;
+      try{
+        const res = await fetch('/api/auth/login', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: u, password: p })
+        });
+        if(!res.ok){ showResult('Login failed: '+res.status); return }
+        const text = await res.text();
+        token = text.trim();
+        localStorage.setItem('rallye_token', token);
+        showToken(token);
+        showResult('Login OK — token saved (length '+token.length+')');
+      }catch(err){ showResult('Error: '+err.message) }
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', ()=>{
+      token = null; localStorage.removeItem('rallye_token'); showToken(null); showResult('Logged out');
+    });
+
+    document.querySelectorAll('button.call').forEach(btn=>{
+      btn.addEventListener('click', async ()=>{
+        const path = btn.getAttribute('data-path');
+        const headers = {};
+        if(useAuthChk.checked && token){ headers['Authorization'] = 'Bearer '+token }
+        try{
+          const res = await fetch(path, { headers });
+          const ct = res.headers.get('content-type') || '';
+          let body;
+          if(ct.includes('application/json')) body = JSON.stringify(await res.json(), null, 2);
+          else body = await res.text();
+          showResult(res.status + ' ' + res.statusText + '\n\n' + body);
+        }catch(err){ showResult('Fetch error: '+err.message) }
+      });
+    });
+  </script>
+</body>
+</html>
